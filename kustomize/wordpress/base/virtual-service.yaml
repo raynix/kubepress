@@ -1,0 +1,13 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: wordpress-vs
+spec:
+  gateways:
+  - wordpress-gateway
+  hosts:
+  - $(DOMAIN)
+  http:
+  - route:
+    - destination:
+        host: wordpress

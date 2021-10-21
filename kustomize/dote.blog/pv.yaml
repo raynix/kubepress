@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: wordpress-dote
+spec:
+  capacity:
+    storage: 10Gi
+  #volumeMode: Filesystem
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  #storageClassName: ""
+  claimRef:
+    namespace: wordpress-dote
+    name: wordpress
+  mountOptions:
+    - hard
+    - nfsvers=4.1
+  nfs:
+    path: /var/nfs/k8s/dote.blog
+    server: 192.168.1.51

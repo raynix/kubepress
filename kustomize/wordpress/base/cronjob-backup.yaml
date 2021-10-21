@@ -50,7 +50,7 @@ spec:
                 - secretRef:
                     name: wordpress-secret
                 - secretRef:
-                    name: gcp-secret
+                    name: backup-gcp-env
               volumeMounts:
                 - name: var-www
                   mountPath: /wordpress

@@ -78,7 +78,7 @@ spec:
             initialDelaySeconds: 15
             periodSeconds: 20
         - name: nginx
-          image: nginx:stable
+          image: nginx:1.20.1
           ports:
             - containerPort: 8080
           volumeMounts:

@@ -3,4 +3,4 @@ kind: Namespace
 metadata:
   name: wordpress-ronia
   labels:
-    istio-injection: enabled
+    istio.io/rev: canary

@@ -3,4 +3,4 @@ kind: Namespace
 metadata:
   name: wordpress-dote
   labels:
-    istio-injection: enabled
+    istio.io/rev: canary

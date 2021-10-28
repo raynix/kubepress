@@ -65,8 +65,8 @@ spec:
               mountPath: /var/www/html
           resources:
             requests:
-              cpu: 500m
-              memory: 300Mi
+              cpu: 400m
+              memory: 400Mi
           readinessProbe:
             tcpSocket:
               port: 9000
@@ -91,7 +91,7 @@ spec:
               mountPath: /var/www/html
           resources:
             requests:
-              cpu: 200m
+              cpu: 100m
               memory: 100Mi
           readinessProbe:
             tcpSocket:

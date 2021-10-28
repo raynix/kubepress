@@ -7,3 +7,10 @@ spec:
   resources:
     requests:
       storage: 10Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wordpress
+spec:
+  replicas: 3

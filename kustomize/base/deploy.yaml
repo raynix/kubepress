@@ -13,10 +13,12 @@ spec:
   selector:
     matchLabels:
       app: wordpress
+      domain: $(DOMAIN)
   template:
     metadata:
       labels:
         app: wordpress
+        domain: $(DOMAIN)
     spec:
       affinity:
         nodeAffinity:
@@ -27,6 +29,21 @@ spec:
                 operator: In
                 values:
                 - amd64
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                        - wordpress
+                    - key: domain
+                      operator: In
+                      values:
+                        - $(DOMAIN)
+                topologyKey: "kubernetes.io/hostname"
       securityContext:
         runAsUser: 65534
         runAsGroup: 65534

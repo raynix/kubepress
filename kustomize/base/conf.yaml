@@ -26,5 +26,5 @@ varReference:
     kind: Deployment
   - path: spec/template/metadata/labels
     kind: Deployment
-  - path: spec/template/spec/affinity/podAntiAffinity/preferredDuringSchedulingIgnoredDuringExecution/labelSelector/matchExpressions/values
+  - path: spec/template/spec/affinity/podAntiAffinity/preferredDuringSchedulingIgnoredDuringExecution/podAffinityTerm/labelSelector/matchExpressions/values
     kind: Deployment

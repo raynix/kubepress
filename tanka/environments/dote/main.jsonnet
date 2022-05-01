@@ -1,9 +1,9 @@
-(import 'wordpress.libsonnet') + 
+(import 'wordpress.libsonnet') +
 {
     _config+:: {
         wordpress+: {
             name: 'dote',
-            backup: 'ghcr.io/raynix/backup:v0.21',
+            backup: 'ghcr.io/raynix/backup:v0.37',
             domain: 'dote.blog',
             cert: 'wordpress-dote-cert',
             volume_ip: '192.168.1.51',

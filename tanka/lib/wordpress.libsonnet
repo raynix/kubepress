@@ -18,6 +18,8 @@
     local cm = $.core.v1.configMap,
     local c = $._config.wordpress,
     local cron = $.batch.v1beta1.cronJob,
+    local pvc = $.core.v1.persistentVolumeClaim,
+    local pv = $.core.v1.persistentVolume,
     local container = $.core.v1.container,
     local secret_ref = $.core.v1.envFromSource.secretRef,
     local volume_mount = $.core.v1.volumeMount,
@@ -31,6 +33,24 @@
     nginx_config: cm.new('nginx-config', { 'nginx.conf': importstr 'nginx.conf'}),
     php_config: cm.new('php-config', { 'php.ini': importstr 'php.ini'}),
     wp_config: cm.new('wordpress-nginx-config', { 'wordpress-nginx.conf': importstr 'wordpress-nginx.conf'}),
+
+    wordpress_volume:
+        pv.new('wordpress-' + c.name) +
+        pv.spec.withCapacity({storage: c.volume_size}) +
+        pv.spec.withAccessModes('ReadWriteMany') +
+        pv.spec.withPersistentVolumeReclaimPolicy('Retain') +
+        pv.spec.claimRef.withNamespace($.namespace.metadata.name) +
+        pv.spec.claimRef.withName('wordpress') +
+        pv.spec.withMountOptions(['hard', 'nfsvers=4.1']) +
+        pv.spec.csi.withDriver('nfs.csi.k8s.io') +
+        pv.spec.csi.withReadOnly(false) +
+        pv.spec.csi.withVolumeHandle('wordpress-' + c.name + '-csi') +
+        pv.spec.csi.withVolumeAttributes({ server: c.volume_ip, share: c.volume_path }),
+
+    wordpress_volume_claim:
+        pvc.new('wordpress') +
+        pvc.spec.withAccessModes('ReadWriteMany') +
+        pvc.spec.resources.withRequests({storage: c.volume_size}),
 
     backup_job: 
         cron.new('backup', '0 14 * * 0', [

@@ -24,6 +24,8 @@
     local secret_ref = $.core.v1.envFromSource.secretRef,
     local volume_mount = $.core.v1.volumeMount,
     local volume = $.core.v1.volume,
+    local gw = $.networking.v1beta1.gateway,
+    local vs = $.networking.v1beta1.virtualService,
     local volume_www = volume.fromPersistentVolumeClaim('var-www', 'wordpress'),
     local volume_gsa = volume.fromSecret('gcp-sa', 'backup-gcp-sa'),
 
@@ -75,4 +77,47 @@
         cron.spec.jobTemplate.spec.template.spec.securityContext.withRunAsUser(65534) +
         cron.spec.jobTemplate.spec.template.spec.securityContext.withRunAsGroup(65534) +
         cron.spec.jobTemplate.spec.template.spec.withVolumes([volume_www, volume_gsa]),
+    
+    gateway:
+        gw.new('wordpress-gateway') +
+        gw.spec.withSelector({ istio: 'ingressgateway'}) +
+        gw.spec.withServers([
+            { 
+                hosts: [c.domain],
+                tls: {
+                    mode: 'SIMPLE',
+                    credentialName: c.cert,
+                },
+                ports: {
+                    name: 'https-wp',
+                    number: 443,
+                    protocol: 'HTTPS',
+                },
+            },
+            { 
+                hosts: [c.domain],
+                tls: {
+                    httpsRedirect: true,
+                },
+                ports: {
+                    name: 'http-wp',
+                    number: 80,
+                    protocol: 'HTTP',
+                },
+            },           
+        ]),
+
+    virtual_service:
+        vs.new('wordpress-vs') +
+        vs.spec.withGateways([$.gateway.metadata.name]) +
+        vs.spec.withHosts([c.domain]) +
+        vs.spec.withHttp([
+            {
+                route: {
+                    destination: {
+                        host: 'wordpress',
+                    }
+                }
+            }
+        ]),
 }

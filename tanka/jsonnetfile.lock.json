@@ -14,6 +14,16 @@
     {
       "source": {
         "git": {
+          "remote": "https://github.com/jsonnet-libs/istio-libsonnet.git",
+          "subdir": "1.13"
+        }
+      },
+      "version": "b17c2b0e5bb5f445d28e667a60229736dacd073c",
+      "sum": "zTr/07I9x8LQAV9ZUcuF93LcbT/M7atV+WqqgJhN2Qo="
+    },
+    {
+      "source": {
+        "git": {
           "remote": "https://github.com/jsonnet-libs/k8s-libsonnet.git",
           "subdir": "1.20"
         }

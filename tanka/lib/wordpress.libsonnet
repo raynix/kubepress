@@ -3,8 +3,10 @@
         wordpress: {
             name: 'wp',
             replicas: 2,
+            history: 3,
             image: 'wordpress:php7.4-fpm-alpine',
             nginx: 'nginx:1.20.1',
+            redis: 'redis:4.0',
             backup: 'ghcr.io/raynix/backup:v0.21',
             domain: 'changeme.com',
             cert: 'changeme-cert',
@@ -22,6 +24,7 @@
     local pvc = $.core.v1.persistentVolumeClaim,
     local pv = $.core.v1.persistentVolume,
     local deploy = $.apps.v1.deployment,
+    local svc = $.core.v1.service,
     local container = $.core.v1.container,
     local secret_ref = $.core.v1.envFromSource.secretRef,
     local volume_mount = $.core.v1.volumeMount,
@@ -30,6 +33,7 @@
     local vs = $.networking.v1beta1.virtualService,
     local volume_www = volume.fromPersistentVolumeClaim('var-www', 'wordpress'),
     local volume_gsa = volume.fromSecret('gcp-sa', 'backup-gcp-sa'),
+    local selectors = { app: 'wordpress', 'domain': c.domain },
 
     namespace: namespace.new('wordpress-' + c.name)
     + namespace.mixin.metadata.withLabels({ "istio.io/rev": c.istio }),
@@ -122,6 +126,32 @@
             container.livenessProbe.tcpSocket.withPort('http') +
             container.livenessProbe.withInitialDelaySeconds(15) +
             container.livenessProbe.withPeriodSeconds(15)
+        ], selectors ) +
+        deploy.spec.withRevisionHistoryLimit(c.history)+
+        deploy.spec.strategy.withType('RollingUpdate') +
+        deploy.spec.strategy.rollingUpdate.withMaxSurge('50%') +
+        deploy.spec.strategy.rollingUpdate.withMaxUnavailable(0) +
+        deploy.spec.template.spec.affinity.podAntiAffinity.withPreferredDuringSchedulingIgnoredDuringExecution([
+            {
+                weight: 100,
+                podAffinityTerm: {
+                    labelSelector: {
+                        matchExpressions: [
+                            { 
+                                key: 'app',
+                                operator: 'In',
+                                values: ['wordpress']
+                            },
+                            {
+                                key: 'domain',
+                                operator: 'In',
+                                values: [c.domain]
+                            },                            
+                        ],
+                        topologyKey: "kubernetes.io/hostname" 
+                    }
+                }
+            }
         ]) +
         deploy.spec.template.spec.withVolumes([
             volume.fromConfigMap('nginx-config-volume', $.nginx_config.metadata.name),
@@ -129,9 +159,14 @@
             volume.fromConfigMap('php-config-volume', $.php_config.metadata.name),
             volume_www,
         ]),
+
+    service:
+        svc.new($.deploy.metadata.name, selectors, [
+            { name: 'http-wp', port: 8080, targetPort: 8080 }
+        ]),
     
     gateway:
-        gw.new('wordpress-gateway') +
+        gw.new($.deploy.metadata.name + '-gateway') +
         gw.spec.withSelector({ istio: 'ingressgateway'}) +
         gw.spec.withServers([
             { 
@@ -160,16 +195,29 @@
         ]),
 
     virtual_service:
-        vs.new('wordpress-vs') +
+        vs.new($.deploy.metadata.name + '-vs') +
         vs.spec.withGateways([$.gateway.metadata.name]) +
         vs.spec.withHosts([c.domain]) +
         vs.spec.withHttp([
             {
                 route: {
-                    destination: {
-                        host: 'wordpress',
-                    }
-                }
-            }
+                    destination: { 
+                        host: $.service.metadata.name,
+                    },
+                },
+            },
         ]),
+
+    redis_deploy:
+        deploy.new('redis', 1, [
+            container.new('redis', c.redis) +
+            container.withPorts([ { name: 'redis', containerPort: 6379, } ]) +
+            container.resources.withRequests({ cpu: '100m', memory: '200Mi' }),      
+        ], { app: 'redis' }),
+
+    redis_service:
+        svc.new($.redis_deploy.metadata.name, $.redis_deploy.spec.selector.matchLabels, [
+            { name: 'tcp-redis', port: 6379, targetPort: 6379 }
+        ]),
+            
 }

@@ -80,6 +80,7 @@
                 volume_mount.new(volume_gsa.name, '/gcp'),
             ]),
         ]) +
+        cron.spec.jobTemplate.spec.template.spec.withRestartPolicy('Never') +
         cron.spec.jobTemplate.spec.template.spec.securityContext.withRunAsUser(65534) +
         cron.spec.jobTemplate.spec.template.spec.securityContext.withRunAsGroup(65534) +
         cron.spec.jobTemplate.spec.template.spec.withVolumes([volume_www, volume_gsa]),

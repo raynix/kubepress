@@ -60,7 +60,7 @@
         pvc.spec.withAccessModes('ReadWriteMany') +
         pvc.spec.resources.withRequests({storage: c.volume_size}),
 
-    backup_job: 
+    backup_job:
         cron.new('backup', '0 14 * * 0', [
             container.new('backup-tool', c.backup) +
             container.withCommand(['/bin/bash', '-c', |||
@@ -69,12 +69,12 @@
                     sleep 1
                 done
                 /wordpress.sh $(DOMAIN) /wordpress /gcp/${SERVICE_ACCOUNT_KEY} ${BACKUP_BUCKET}
-                curl -fsI -X POST http://localhost:15020/quitquitquit        
+                curl -fsI -X POST http://localhost:15020/quitquitquit
             |||]) +
             container.withEnvFrom([
                 secret_ref.withName('wordpress-secret'),
                 secret_ref.withName('backup-gcp-env'),
-            ]) + 
+            ]) +
             container.withVolumeMounts([
                 volume_mount.new(volume_www.name, '/wordpress'),
                 volume_mount.new(volume_gsa.name, '/gcp'),
@@ -83,7 +83,7 @@
         cron.spec.jobTemplate.spec.template.spec.securityContext.withRunAsUser(65534) +
         cron.spec.jobTemplate.spec.template.spec.securityContext.withRunAsGroup(65534) +
         cron.spec.jobTemplate.spec.template.spec.withVolumes([volume_www, volume_gsa]),
-    
+
     deploy:
         deploy.new('wordpress', c.replicas, [
             # wordpress-php-fpm container
@@ -99,7 +99,7 @@
             ]) +
             container.withPorts([ { name: 'fpm', containerPort: 9000, } ]) +
             container.withVolumeMounts([
-                volume_mount.new('php-config-volume', '/usr/local/etc/php/php.ini') + 
+                volume_mount.new('php-config-volume', '/usr/local/etc/php/php.ini') +
                 volume_mount.withSubPath('php.ini'),
                 volume_mount.new(volume_www.name, '/var/www/html'),
             ]) +
@@ -137,7 +137,7 @@
                 podAffinityTerm: {
                     labelSelector: {
                         matchExpressions: [
-                            { 
+                            {
                                 key: 'app',
                                 operator: 'In',
                                 values: ['wordpress']
@@ -146,10 +146,10 @@
                                 key: 'domain',
                                 operator: 'In',
                                 values: [c.domain]
-                            },                            
+                            },
                         ],
-                        topologyKey: "kubernetes.io/hostname" 
-                    }
+                    },
+                    topologyKey: "kubernetes.io/hostname",
                 }
             }
         ]) +
@@ -164,34 +164,34 @@
         svc.new($.deploy.metadata.name, selectors, [
             { name: 'http-wp', port: 8080, targetPort: 8080 }
         ]),
-    
+
     gateway:
         gw.new($.deploy.metadata.name + '-gateway') +
         gw.spec.withSelector({ istio: 'ingressgateway'}) +
         gw.spec.withServers([
-            { 
+            {
                 hosts: [c.domain],
                 tls: {
                     mode: 'SIMPLE',
                     credentialName: c.cert,
                 },
-                ports: {
+                port: {
                     name: 'https-wp',
                     number: 443,
                     protocol: 'HTTPS',
                 },
             },
-            { 
+            {
                 hosts: [c.domain],
                 tls: {
                     httpsRedirect: true,
                 },
-                ports: {
+                port: {
                     name: 'http-wp',
                     number: 80,
                     protocol: 'HTTP',
                 },
-            },           
+            },
         ]),
 
     virtual_service:
@@ -200,11 +200,11 @@
         vs.spec.withHosts([c.domain]) +
         vs.spec.withHttp([
             {
-                route: {
-                    destination: { 
-                        host: $.service.metadata.name,
+                route: [
+                    {
+                        destination: { host: $.service.metadata.name, },
                     },
-                },
+                ],
             },
         ]),
 
@@ -212,12 +212,12 @@
         deploy.new('redis', 1, [
             container.new('redis', c.redis) +
             container.withPorts([ { name: 'redis', containerPort: 6379, } ]) +
-            container.resources.withRequests({ cpu: '100m', memory: '200Mi' }),      
+            container.resources.withRequests({ cpu: '100m', memory: '200Mi' }),
         ], { app: 'redis' }),
 
     redis_service:
         svc.new($.redis_deploy.metadata.name, $.redis_deploy.spec.selector.matchLabels, [
             { name: 'tcp-redis', port: 6379, targetPort: 6379 }
         ]),
-            
+
 }

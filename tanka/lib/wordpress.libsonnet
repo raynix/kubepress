@@ -7,7 +7,7 @@
             image: 'wordpress:php7.4-fpm-alpine',
             nginx: 'nginx:1.20.1',
             redis: 'redis:4.0',
-            backup: 'ghcr.io/raynix/backup:v0.21',
+            backup: 'ghcr.io/raynix/backup:v0.37',
             domain: 'changeme.com',
             cert: 'changeme-cert',
             volume_ip: '10.0.0.0',
@@ -38,9 +38,9 @@
     namespace: namespace.new('wordpress-' + c.name)
     + namespace.mixin.metadata.withLabels({ "istio.io/rev": c.istio }),
 
-    nginx_config: cm.new('nginx-config', { 'nginx.conf': importstr 'nginx.conf'}),
-    php_config: cm.new('php-config', { 'php.ini': importstr 'php.ini'}),
-    wp_config: cm.new('wordpress-nginx-config', { 'wordpress-nginx.conf': importstr 'wordpress-nginx.conf'}),
+    nginx_config: cm.new('nginx-config', { 'nginx.conf': importstr 'conf/nginx.conf'}),
+    php_config: cm.new('php-config', { 'php.ini': importstr 'conf/php.ini'}),
+    wp_config: cm.new('wordpress-nginx-config', { 'wordpress-nginx.conf': importstr 'conf/wordpress-nginx.conf'}),
 
     wordpress_volume:
         pv.new('wordpress-' + c.name) +

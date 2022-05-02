@@ -3,7 +3,6 @@
     _config+:: {
         wordpress+: {
             name: 'dote',
-            backup: 'ghcr.io/raynix/backup:v0.37',
             domain: 'dote.blog',
             cert: 'wordpress-dote-cert',
             volume_ip: '192.168.1.51',

@@ -3,6 +3,7 @@
     _config+:: {
         wordpress+: {
             name: 'raynix',
+            replicas: 3,
             domain: 'raynix.info',
             cert: 'wordpress-raynix-cert',
             volume_ip: '192.168.1.51',

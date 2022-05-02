@@ -1,0 +1,14 @@
+{
+  "apiVersion": "tanka.dev/v1alpha1",
+  "kind": "Environment",
+  "metadata": {
+    "name": "environments/ronia"
+  },
+  "spec": {
+    "apiServer": "",
+    "contextNames": null,
+    "namespace": "wordpress-ronia",
+    "resourceDefaults": {},
+    "expectVersions": {}
+  }
+}

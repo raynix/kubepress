@@ -2,11 +2,11 @@
 {
     _config+:: {
         wordpress+: {
-            name: 'dote',
-            domain: 'dote.blog',
-            cert: 'wordpress-dote-cert',
+            name: 'sophie',
+            domain: 'sophie.raynix.info',
+            cert: 'wordpress-sophie-cert',
             volume_ip: '192.168.1.51',
-            volume_path: '/var/nfs/k8s/dote.blog',
+            volume_path: '/var/nfs/k8s/sophix.me',
             volume_size: '10Gi',
             istio: 'magpie',
         },

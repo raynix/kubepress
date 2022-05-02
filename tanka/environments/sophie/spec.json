@@ -1,0 +1,14 @@
+{
+  "apiVersion": "tanka.dev/v1alpha1",
+  "kind": "Environment",
+  "metadata": {
+    "name": "environments/sophie"
+  },
+  "spec": {
+    "apiServer": "",
+    "contextNames": null,
+    "namespace": "wordpress-sophie",
+    "resourceDefaults": {},
+    "expectVersions": {}
+  }
+}

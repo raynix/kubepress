@@ -33,7 +33,6 @@
     local vs = $.networking.v1beta1.virtualService,
     local volume_www = volume.fromPersistentVolumeClaim('var-www', 'wordpress'),
     local volume_gsa = volume.fromSecret('gcp-sa', 'backup-gcp-sa'),
-    local selectors = { app: 'wordpress', 'domain': c.domain },
 
     namespace: namespace.new('wordpress-' + c.name)
     + namespace.mixin.metadata.withLabels({ "istio.io/rev": c.istio }),
@@ -127,11 +126,13 @@
             container.livenessProbe.tcpSocket.withPort('http') +
             container.livenessProbe.withInitialDelaySeconds(15) +
             container.livenessProbe.withPeriodSeconds(15)
-        ], selectors ) +
+        ], { app: 'wordpress', 'domain': c.domain } ) +
         deploy.spec.withRevisionHistoryLimit(c.history)+
         deploy.spec.strategy.withType('RollingUpdate') +
         deploy.spec.strategy.rollingUpdate.withMaxSurge('50%') +
         deploy.spec.strategy.rollingUpdate.withMaxUnavailable(0) +
+        deploy.spec.template.spec.securityContext.withRunAsUser(65534) +
+        deploy.spec.template.spec.securityContext.withRunAsGroup(65534) +
         deploy.spec.template.spec.affinity.podAntiAffinity.withPreferredDuringSchedulingIgnoredDuringExecution([
             {
                 weight: 100,
@@ -162,7 +163,7 @@
         ]),
 
     service:
-        svc.new($.deploy.metadata.name, selectors, [
+        svc.new($.deploy.metadata.name, $.deploy.spec.selector.matchLabels, [
             { name: 'http-wp', port: 8080, targetPort: 8080 }
         ]),
 

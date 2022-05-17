@@ -105,12 +105,8 @@
                 volume_mount.new(volume_www.name, '/var/www/html'),
             ]) +
             container.resources.withRequests({ cpu: '400m', memory: '400Mi' }) +
-            container.readinessProbe.tcpSocket.withPort('fpm') +
-            container.readinessProbe.withInitialDelaySeconds(5) +
-            container.readinessProbe.withPeriodSeconds(10) +
-            container.livenessProbe.tcpSocket.withPort('fpm') +
-            container.livenessProbe.withInitialDelaySeconds(15) +
-            container.livenessProbe.withPeriodSeconds(15),
+            myutil.readiness_probe('fpm') +
+            myutil.liveness_probe('fpm'),
             # nginx container
             container.new('nginx', c.nginx) +
             container.withPorts([ { name: 'http', containerPort: 8080 }]) +
@@ -121,12 +117,8 @@
                 volume_mount.new(volume_www.name, '/var/www/html'),
             ]) +
             container.resources.withRequests({ cpu: '100m', memory: '100Mi' })+
-            container.readinessProbe.tcpSocket.withPort('http') +
-            container.readinessProbe.withInitialDelaySeconds(5) +
-            container.readinessProbe.withPeriodSeconds(10) +
-            container.livenessProbe.tcpSocket.withPort('http') +
-            container.livenessProbe.withInitialDelaySeconds(15) +
-            container.livenessProbe.withPeriodSeconds(15)
+            myutil.readiness_probe('http') +
+            myutil.liveness_probe('http'),
         ], { app: 'wordpress', 'domain': c.domain } ) +
         deploy.spec.withRevisionHistoryLimit(c.history)+
         deploy.spec.strategy.withType('RollingUpdate') +
@@ -175,6 +167,8 @@
         deploy.new('redis', 1, [
             container.new('redis', c.redis) +
             container.withPorts([ { name: 'redis', containerPort: 6379, } ]) +
+            myutil.readiness_probe('redis') +
+            myutil.liveness_probe('redis'),
             container.resources.withRequests({ cpu: '100m', memory: '200Mi' }),
         ], { app: 'redis' }),
 

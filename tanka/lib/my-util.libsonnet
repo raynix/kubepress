@@ -43,4 +43,18 @@
                 },
             },
         ]),
+
+    readiness_probe(port, initial_delay_seconds=5, period_seconds=5)::
+        local container = $.core.v1.container;
+
+        container.readinessProbe.tcpSocket.withPort(port) +
+        container.readinessProbe.withInitialDelaySeconds(initial_delay_seconds) +
+        container.readinessProbe.withPeriodSeconds(period_seconds),
+
+    liveness_probe(port, initial_delay_seconds=15, period_seconds=15)::
+        local container = $.core.v1.container;
+
+        container.livenessProbe.tcpSocket.withPort(port) +
+        container.livenessProbe.withInitialDelaySeconds(initial_delay_seconds) +
+        container.livenessProbe.withPeriodSeconds(period_seconds),
 }

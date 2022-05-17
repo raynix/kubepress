@@ -14,7 +14,7 @@
             },
         ]),
 
-    gateway(name, hosts, cert_secret, default_selector={ istio: 'ingressgatewway'})::
+    gateway(name, hosts, cert_secret, default_selector={ istio: 'ingressgateway'})::
         local gw = $.networking.v1beta1.gateway;
         gw.new(name) +
         gw.spec.withSelector(default_selector) +

@@ -17,6 +17,7 @@
         }
     },
 
+    local myutil = import 'my-util.libsonnet',
     local namespace = $.core.v1.namespace,
     local cm = $.core.v1.configMap,
     local c = $._config.wordpress,
@@ -167,48 +168,8 @@
             { name: 'http-wp', port: 8080, targetPort: 8080 }
         ]),
 
-    gateway:
-        gw.new($.deploy.metadata.name + '-gateway') +
-        gw.spec.withSelector({ istio: 'ingressgateway'}) +
-        gw.spec.withServers([
-            {
-                hosts: [c.domain],
-                tls: {
-                    mode: 'SIMPLE',
-                    credentialName: c.cert,
-                },
-                port: {
-                    name: 'https-wp',
-                    number: 443,
-                    protocol: 'HTTPS',
-                },
-            },
-            {
-                hosts: [c.domain],
-                tls: {
-                    httpsRedirect: true,
-                },
-                port: {
-                    name: 'http-wp',
-                    number: 80,
-                    protocol: 'HTTP',
-                },
-            },
-        ]),
-
-    virtual_service:
-        vs.new($.deploy.metadata.name + '-vs') +
-        vs.spec.withGateways([$.gateway.metadata.name]) +
-        vs.spec.withHosts([c.domain]) +
-        vs.spec.withHttp([
-            {
-                route: [
-                    {
-                        destination: { host: $.service.metadata.name, },
-                    },
-                ],
-            },
-        ]),
+    gateway: myutil.gateway($.deploy.metadata.name, [c.domain], c.cert),
+    virtual_service: myutil.virtual_service($.service, c.domain, c.cert, gateway=$.gateway),
 
     redis_deploy:
         deploy.new('redis', 1, [

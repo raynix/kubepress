@@ -168,7 +168,7 @@
             container.new('redis', c.redis) +
             container.withPorts([ { name: 'redis', containerPort: 6379, } ]) +
             myutil.readiness_probe('redis') +
-            myutil.liveness_probe('redis'),
+            myutil.liveness_probe('redis') +
             container.resources.withRequests({ cpu: '100m', memory: '200Mi' }),
         ], { app: 'redis' }),
 

@@ -30,8 +30,6 @@
     local secret_ref = $.core.v1.envFromSource.secretRef,
     local volume_mount = $.core.v1.volumeMount,
     local volume = $.core.v1.volume,
-    local gw = $.networking.v1beta1.gateway,
-    local vs = $.networking.v1beta1.virtualService,
     local volume_www = volume.fromPersistentVolumeClaim('var-www', 'wordpress'),
     local volume_gsa = volume.fromSecret('gcp-sa', 'backup-gcp-sa'),
 
@@ -64,12 +62,7 @@
         cron.new('backup', '0 14 * * 0', [
             container.new('backup-tool', c.backup) +
             container.withCommand(['/bin/bash', '-c', |||
-                until curl -fsI http://localhost:15021/healthz/ready; do
-                    echo 'Waiting for Sidecar...'
-                    sleep 1
-                done
                 /wordpress.sh $(DOMAIN) /wordpress /gcp/${SERVICE_ACCOUNT_KEY} ${BACKUP_BUCKET}
-                curl -fsI -X POST http://localhost:15020/quitquitquit
             |||]) +
             container.withEnvFrom([
                 secret_ref.withName('wordpress-secret'),
@@ -83,7 +76,8 @@
         cron.spec.jobTemplate.spec.template.spec.withRestartPolicy('Never') +
         cron.spec.jobTemplate.spec.template.spec.securityContext.withRunAsUser(65534) +
         cron.spec.jobTemplate.spec.template.spec.securityContext.withRunAsGroup(65534) +
-        cron.spec.jobTemplate.spec.template.spec.withVolumes([volume_www, volume_gsa]),
+        cron.spec.jobTemplate.spec.template.spec.withVolumes([volume_www, volume_gsa]) +
+        cron.spec.jobTemplate.spec.template.metadata.withAnnotations({'sidecar.istio.io/inject': 'false'}),
 
     deploy:
         deploy.new('wordpress', c.replicas, [

@@ -61,9 +61,7 @@
     backup_job:
         cron.new('backup', '0 14 * * 0', [
             container.new('backup-tool', c.backup) +
-            container.withCommand(['/bin/bash', '-c', |||
-                /wordpress.sh $(DOMAIN) /wordpress /gcp/${SERVICE_ACCOUNT_KEY} ${BACKUP_BUCKET}
-            |||]) +
+            container.withCommand(['/bin/bash', '-c', '/wordpress.sh %s /wordpress /gcp/${SERVICE_ACCOUNT_KEY} ${BACKUP_BUCKET}' % [c.domain]]) +
             container.withEnvFrom([
                 secret_ref.withName('wordpress-secret'),
                 secret_ref.withName('backup-gcp-env'),

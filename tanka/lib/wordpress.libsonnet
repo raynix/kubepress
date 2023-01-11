@@ -6,7 +6,7 @@
             history: 3,
             image: 'wordpress:php7.4-fpm-alpine',
             nginx: 'nginx:1.20.1',
-            redis: 'redis:4.0',
+            redis: 'redis:6.2.8-alpine3.17',
             backup: 'ghcr.io/raynix/backup:v0.37',
             domain: 'changeme.com',
             cert: 'changeme-cert',
@@ -161,7 +161,8 @@
             container.withPorts([ { name: 'redis', containerPort: 6379, } ]) +
             myutil.readiness_probe('redis') +
             myutil.liveness_probe('redis') +
-            container.resources.withRequests({ cpu: '100m', memory: '200Mi' }),
+            container.resources.withRequests({ cpu: '100m', memory: '400Mi' }) +
+            container.resources.withLimits({ cpu: '1.0', memory: '1Gi' }),
         ], { app: 'redis' }),
 
     redis_service:

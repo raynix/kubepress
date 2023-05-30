@@ -8,28 +8,28 @@
           "subdir": "ksonnet-util"
         }
       },
-      "version": "37f8f9d015efac5f83c3f490a52de1d686c2cdc9",
-      "sum": "xo1A7iYvJ7OZ64q2dOZY0G8FGHHt+t/+vEJW3bnXHyk="
+      "version": "3b08e7d37511dfd39af6027d07788a5ca8ec71b1",
+      "sum": "0y3AFX9LQSpfWTxWKSwoLgbt0Wc9nnCwhMH2szKzHv0="
     },
     {
       "source": {
         "git": {
           "remote": "https://github.com/jsonnet-libs/istio-libsonnet.git",
-          "subdir": "1.13"
+          "subdir": "1.16"
         }
       },
-      "version": "b17c2b0e5bb5f445d28e667a60229736dacd073c",
-      "sum": "zTr/07I9x8LQAV9ZUcuF93LcbT/M7atV+WqqgJhN2Qo="
+      "version": "49d885dbaab692d20f00cb3baf0e06b9b7b035e7",
+      "sum": "3L7mxmaXmHh8o/xwfkH5X48td53XG5ehRO+qeE8R6ec="
     },
     {
       "source": {
         "git": {
           "remote": "https://github.com/jsonnet-libs/k8s-libsonnet.git",
-          "subdir": "1.20"
+          "subdir": "1.26"
         }
       },
-      "version": "1942ec15993b5a273569bb9a59d522b01522d0db",
-      "sum": "8EYLLDLeuBFB7O9cALs/TcS7HxmE0I/fMGtk3QK9ABM="
+      "version": "a0779420abf73f90167d449a9e527319ced7d134",
+      "sum": "q6ZaBe1Ciob0O3QbLqtEfOnCGt5rsv5A9RCFN3+Ex/I="
     }
   ],
   "legacyImports": false

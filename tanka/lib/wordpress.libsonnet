@@ -21,7 +21,7 @@
     local namespace = $.core.v1.namespace,
     local cm = $.core.v1.configMap,
     local c = $._config.wordpress,
-    local cron = $.batch.v1beta1.cronJob,
+    local cron = $.batch.v1.cronJob,
     local pvc = $.core.v1.persistentVolumeClaim,
     local pv = $.core.v1.persistentVolume,
     local deploy = $.apps.v1.deployment,

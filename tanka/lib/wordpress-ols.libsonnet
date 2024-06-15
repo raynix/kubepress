@@ -22,7 +22,6 @@
     local deploy = $.apps.v1.deployment,
     local container = $.core.v1.container,
     local secret_ref = $.core.v1.envFromSource.secretRef,
-    local svc = $.core.v1.service,
     local volume_mount = $.core.v1.volumeMount,
     local volume = $.core.v1.volume,
     local volume_www = volume.fromPersistentVolumeClaim('var-www', 'wordpress'),
@@ -43,10 +42,10 @@
                     value: 'wp_',
                 }
             ]) +
-            container.withPorts([ { name: 'http', containerPort: 80, } ]) +
+            container.withPorts([ { name: 'http', containerPort: 8080, } ]) +
             container.withVolumeMounts([
                 volume_mount.new(volume_www.name, '/var/www/vhosts/localhost/html'),
-                //volume_mount.new('ols-httpd-config-volume', '/usr/local/lsws/conf/httpd_config.conf') + volume_mount.withSubPath('httpd_config.conf'),
+                volume_mount.new('ols-httpd-config-volume', '/usr/local/lsws/conf/httpd_config.conf') + volume_mount.withSubPath('httpd_config.conf'),
                 //volume_mount.new('ols-vh-config-volume', '/usr/local/lsws/conf/vhosts/vhconf.conf')
             ]) +
             container.resources.withRequests({ cpu: '400m', memory: '400Mi' }) +
@@ -83,9 +82,5 @@
             volume.fromConfigMap('ols-httpd-config-volume', $.ols_config.metadata.name),
             volume.fromConfigMap('ols-vh-config-volume', $.ols_vh_config.metadata.name),
             volume_www,
-        ]),
-    service:
-        svc.new($.deploy.metadata.name, $.deploy.spec.selector.matchLabels, [
-            { name: 'http-wp', port: 8080, targetPort: 80 }
         ]),
 }

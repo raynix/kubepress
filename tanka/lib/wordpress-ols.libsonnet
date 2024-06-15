@@ -28,6 +28,7 @@
     local volume_gsa = volume.fromSecret('gcp-sa', 'backup-gcp-sa'),
 
     ols_config: cm.new('ols-httpd-config', { 'httpd_config.conf': importstr 'conf/ols_httpd_config.conf'}),
+    ols_vh_config: cm.new('ols-vh-config', { 'vhconf.conf': importstr 'conf/ols_vhconf.conf'}),
 
     deploy:
         deploy.new('wordpress', c.replicas, [
@@ -44,7 +45,8 @@
             container.withPorts([ { name: 'http', containerPort: 8080, } ]) +
             container.withVolumeMounts([
                 volume_mount.new(volume_www.name, '/var/www/vhosts/localhost/html'),
-                volume_mount.new('ols-httpd-config-volume', '/usr/local/lsws/conf/httpd_config.conf') + volume_mount.withSubPath('httpd_config.conf'),
+                //volume_mount.new('ols-httpd-config-volume', '/usr/local/lsws/conf/httpd_config.conf') + volume_mount.withSubPath('httpd_config.conf'),
+                //volume_mount.new('ols-vh-config-volume', '/usr/local/lsws/conf/vhosts/vhconf.conf')
             ]) +
             container.resources.withRequests({ cpu: '400m', memory: '400Mi' }) +
             myutil.readiness_probe('http') +
@@ -78,6 +80,7 @@
         ]) +
         deploy.spec.template.spec.withVolumes([
             volume.fromConfigMap('ols-httpd-config-volume', $.ols_config.metadata.name),
+            volume.fromConfigMap('ols-vh-config-volume', $.ols_vh_config.metadata.name),
             volume_www,
         ]),
 }

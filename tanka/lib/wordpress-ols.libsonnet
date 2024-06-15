@@ -46,7 +46,7 @@
             container.withVolumeMounts([
                 volume_mount.new(volume_www.name, '/var/www/vhosts/localhost/html'),
                 volume_mount.new('ols-httpd-config-volume', '/usr/local/lsws/conf/httpd_config.conf') + volume_mount.withSubPath('httpd_config.conf'),
-                //volume_mount.new('ols-vh-config-volume', '/usr/local/lsws/conf/vhosts/vhconf.conf')
+                volume_mount.new('ols-vh-config-volume', '/usr/local/lsws/conf/vhosts/Example/vhconf.conf')
             ]) +
             container.resources.withRequests({ cpu: '400m', memory: '400Mi' }) +
             myutil.readiness_probe('http') +

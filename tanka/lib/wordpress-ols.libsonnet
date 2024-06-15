@@ -30,7 +30,7 @@
     ols_config: cm.new('ols-httpd-config', { 'httpd_config.conf': importstr 'conf/ols_httpd_config.conf'}),
 
     deploy:
-        deploy.new('wordpress-ols', c.replicas, [
+        deploy.new('wordpress', c.replicas, [
             container.new('wordpress', c.image) +
             container.withEnvFrom([
                 secret_ref.withName('wordpress-secret'),
@@ -49,7 +49,7 @@
             container.resources.withRequests({ cpu: '400m', memory: '400Mi' }) +
             myutil.readiness_probe('http') +
             myutil.liveness_probe('http'),
-        ], { app: 'wordpress-ols', 'domain': c.domain } ) +
+        ], { app: 'wordpress', 'domain': c.domain } ) +
         deploy.spec.withRevisionHistoryLimit(c.history)+
         deploy.spec.strategy.withType('RollingUpdate') +
         deploy.spec.strategy.rollingUpdate.withMaxSurge('50%') +
@@ -63,7 +63,7 @@
                             {
                                 key: 'app',
                                 operator: 'In',
-                                values: ['wordpress-ols']
+                                values: ['wordpress']
                             },
                             {
                                 key: 'domain',

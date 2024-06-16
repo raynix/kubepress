@@ -110,7 +110,7 @@
             container.resources.withRequests({ cpu: '100m', memory: '100Mi' })+
             myutil.readiness_probe('http') +
             myutil.liveness_probe('http'),
-        ], { app: 'wordpress', 'domain': c.domain } ) +
+        ], { 'domain': c.domain } ) +
         deploy.spec.withRevisionHistoryLimit(c.history)+
         deploy.spec.strategy.withType('RollingUpdate') +
         deploy.spec.strategy.rollingUpdate.withMaxSurge('50%') +

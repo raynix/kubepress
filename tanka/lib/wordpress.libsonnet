@@ -13,7 +13,7 @@
             volume_ip: '10.0.0.0',
             volume_path: '/path/to/wordpress',
             volume_size: '10Gi',
-            istio: 'magpie',
+            istio: false,
         }
     },
 

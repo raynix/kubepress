@@ -33,8 +33,7 @@
     local volume_www = volume.fromPersistentVolumeClaim('var-www', 'wordpress'),
     local volume_gsa = volume.fromSecret('gcp-sa', 'backup-gcp-sa'),
 
-    namespace: namespace.new('wordpress-' + c.name)
-    + namespace.mixin.metadata.withLabels({ "istio.io/rev": c.istio }),
+    namespace: namespace.new('wordpress-' + c.name),
 
     nginx_config: cm.new('nginx-config', { 'nginx.conf': importstr 'conf/nginx.conf'}),
     php_config: cm.new('php-config', { 'php.ini': importstr 'conf/php.ini'}),

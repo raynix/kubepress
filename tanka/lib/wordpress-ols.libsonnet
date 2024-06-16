@@ -12,7 +12,7 @@
             volume_ip: '10.0.0.0',
             volume_path: '/path/to/wordpress',
             volume_size: '10Gi',
-            istio: 'magpie',
+            istio: false,
         }
     },
 
@@ -51,8 +51,9 @@
             container.resources.withRequests({ cpu: '400m', memory: '400Mi' }) +
             myutil.readiness_probe('http') +
             myutil.liveness_probe('http'),
-        ], { app: 'wordpress', 'domain': c.domain } ) +
+        ], { 'domain': c.domain } ) +
         deploy.spec.withRevisionHistoryLimit(c.history)+
+        deploy.spec.template.metadata.withLabelsMixin(if c.istio then { 'sidecar.istio.io/inject': true } else {}) +
         deploy.spec.strategy.withType('RollingUpdate') +
         deploy.spec.strategy.rollingUpdate.withMaxSurge('50%') +
         deploy.spec.strategy.rollingUpdate.withMaxUnavailable(0) +

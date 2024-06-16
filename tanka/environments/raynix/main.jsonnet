@@ -1,4 +1,4 @@
-(import 'wordpress-ols.libsonnet') +
+(import 'wordpress.libsonnet') +
 {
     _config+:: {
         wordpress+: {

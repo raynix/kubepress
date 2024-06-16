@@ -53,7 +53,7 @@
             myutil.liveness_probe('http'),
         ], { 'domain': c.domain } ) +
         deploy.spec.withRevisionHistoryLimit(c.history)+
-        deploy.spec.template.metadata.withLabelsMixin(if c.istio then { 'sidecar.istio.io/inject': true } else {}) +
+        deploy.spec.template.metadata.withLabelsMixin(if c.istio then { 'sidecar.istio.io/inject': 'true' } else {}) +
         deploy.spec.strategy.withType('RollingUpdate') +
         deploy.spec.strategy.rollingUpdate.withMaxSurge('50%') +
         deploy.spec.strategy.rollingUpdate.withMaxUnavailable(0) +

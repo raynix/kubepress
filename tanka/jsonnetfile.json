@@ -14,7 +14,7 @@
       "source": {
         "git": {
           "remote": "https://github.com/jsonnet-libs/k8s-libsonnet.git",
-          "subdir": "1.26"
+          "subdir": "1.29"
         }
       },
       "version": "main"
@@ -23,7 +23,7 @@
       "source": {
         "git": {
           "remote": "https://github.com/jsonnet-libs/istio-libsonnet.git",
-          "subdir": "1.16"
+          "subdir": "1.19"
         }
       },
       "version": "main"

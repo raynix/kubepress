@@ -15,21 +15,21 @@
       "source": {
         "git": {
           "remote": "https://github.com/jsonnet-libs/istio-libsonnet.git",
-          "subdir": "1.16"
+          "subdir": "1.19"
         }
       },
-      "version": "49d885dbaab692d20f00cb3baf0e06b9b7b035e7",
-      "sum": "3L7mxmaXmHh8o/xwfkH5X48td53XG5ehRO+qeE8R6ec="
+      "version": "7d51301969eb8b3bfb1569ba611ff32ba519a559",
+      "sum": "1YSM3SuiuPRD8sWmABEUsdoFRyNPJKcgLkVB7oqAG/E="
     },
     {
       "source": {
         "git": {
           "remote": "https://github.com/jsonnet-libs/k8s-libsonnet.git",
-          "subdir": "1.26"
+          "subdir": "1.29"
         }
       },
-      "version": "a0779420abf73f90167d449a9e527319ced7d134",
-      "sum": "q6ZaBe1Ciob0O3QbLqtEfOnCGt5rsv5A9RCFN3+Ex/I="
+      "version": "6ecbb7709baf27f44b2e48f3529741ae6754ae6a",
+      "sum": "i2w3hGbgQmaB73t5LJHSioPOVdYv8ZBvivHiDwZJVyI="
     }
   ],
   "legacyImports": false

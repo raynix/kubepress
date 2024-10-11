@@ -80,7 +80,21 @@
 
     wordpress_volume_claim:
       pvc.new('wordpress') +
+      pvc.metadata.withNamespace(namespace) +
       pvc.spec.withAccessModes('ReadWriteMany') +
       pvc.spec.resources.withRequests({storage: sv.volume_size}),
-  }
+  },
+
+  dynamic_volume(name, namespace): {
+    local dv = self,
+    volume_size:: "1Gi",
+    storage_class:: "csi-nfs",
+
+    wordpress_volume_claim:
+      pvc.new('wordpress-' + name) +
+      pvc.metadata.withNamespace(namespace) +
+      pvc.spec.withAccessModes('ReadWriteMany') +
+      pvc.spec.withStorageClassName(dv.storage_class) +
+      pvc.spec.resources.withRequests({storage: dv.volume_size}),
+  },
 }

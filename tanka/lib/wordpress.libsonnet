@@ -14,6 +14,7 @@
       volume_path: '/path/to/wordpress',
       volume_size: '10Gi',
       istio: false,
+      dynamic_volume: false,
     },
   },
 
@@ -37,7 +38,9 @@
   php_config: cm.new('php-config', { 'php.ini': importstr 'conf/php.ini' }),
   wp_config: cm.new('wordpress-nginx-config', { 'wordpress-nginx.conf': importstr 'conf/wordpress-nginx.conf' }),
 
-  static_volume: myutil.static_volume(c.name, $.namespace.metadata.name) {
+  wp_volume: if c.dynamic_volume then myutil.dynamic_volume(c.name, $.namespace.metadata.name) {
+    volume_size: c.volume_size,
+  } else myutil.static_volume(c.name, $.namespace.metadata.name) {
     volume_ip: c.volume_ip,
     volume_path: c.volume_path,
     volume_size: c.volume_size,

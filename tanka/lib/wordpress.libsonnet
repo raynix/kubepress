@@ -9,7 +9,6 @@
       redis: 'redis:6.2.8-alpine3.17',
       backup: 'ghcr.io/raynix/backup:v0.37',
       domain: 'changeme.com',
-      cert: 'changeme-cert',
       volume_ip: '10.0.0.0',
       volume_path: '/path/to/wordpress',
       volume_size: '10Gi',
@@ -140,8 +139,10 @@
       { name: 'http-wp', port: 8080, targetPort: 8080 },
     ]),
 
-  gateway: myutil.gateway($.deploy.metadata.name, [c.domain], c.cert),
-  virtual_service: myutil.virtual_service($.service, c.domain, c.cert, gateway=$.gateway),
+  certificate: myutil.certificate(c.name, 'istio-system', [c.domain]),
+
+  gateway: myutil.gateway($.deploy.metadata.name, [c.domain], $.certificate.spec.secretName),
+  virtual_service: myutil.virtual_service($.service, c.domain, $.certificate.spec.secretName, gateway=$.gateway),
 
   redis_deploy:
     deploy.new('redis', 1, [

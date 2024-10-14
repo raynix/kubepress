@@ -97,4 +97,31 @@
       pvc.spec.withStorageClassName(dv.storage_class) +
       pvc.spec.resources.withRequests({storage: dv.volume_size}),
   },
+
+  certificate(name, namespace, domains): {
+    apiVersion: 'cert-manager.io/v1',
+    kind: 'Certificate',
+    metadata: {
+      name: 'wordpress-' + name,
+      namespace: namespace,
+    },
+    spec: {
+      secretName: 'wordpress-' + name + '-cert',
+      duration: '2160h0m0s', // 90d
+      renewBefore: '360h0m0s', // 15d
+      subject: {
+        organizations: domains
+      },
+      privateKey: {
+        algorithm: 'RSA',
+        size: 2048,
+      },
+      usages: ['server auth', 'client auth'],
+      dnsNames: domains,
+      issuerRef: {
+        name: 'letsencrypt-issuer',
+        kind: 'ClusterIssuer'
+      },
+    },
+  },
 }

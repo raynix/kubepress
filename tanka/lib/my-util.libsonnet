@@ -6,6 +6,28 @@
   local pv = $.core.v1.persistentVolume,
   local sc = $.storage.v1.storageClass,
 
+  http_route(service, domain, gateway, gateway_ns='istio-system'): {
+    apiVersion: 'gateway.networking.k8s.io/v1beta1',
+    kind: 'HTTPRoute',
+    metadata: {
+      name: service,
+    },
+    spec: {
+      parentRefs: [{
+        kind: 'Gateway',
+        name: gateway,
+        namespace: gateway_ns,
+      }],
+      hostnames: [domain],
+      rules: [{
+        backendRefs: [{
+          name: service,
+          port: 8080,
+        }],
+      }],
+    },
+  },
+
   virtual_service(service, domain, cert, gateway, https_port=443, http_port=80):
     vs.new(service.metadata.name) +
     vs.spec.withGateways([gateway.metadata.name]) +

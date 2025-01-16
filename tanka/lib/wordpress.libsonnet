@@ -141,8 +141,6 @@
 
   certificate: myutil.certificate(c.name, 'istio-system', [c.domain]),
 
-  gateway: myutil.gateway($.deploy.metadata.name, [c.domain], $.certificate.spec.secretName),
-  virtual_service: myutil.virtual_service($.service, c.domain, $.certificate.spec.secretName, gateway=$.gateway),
   http_route: myutil.http_route($.service.metadata.name, c.domain, 'kubernetes-gateway'),
 
   redis_deploy:

@@ -1,4 +1,5 @@
-(import 'k.libsonnet') + {
+local k = import 'k.libsonnet';
+{
   _config:: {
     wordpress: {
       name: 'wp',
@@ -18,16 +19,16 @@
   },
 
   local myutil = import 'my-util.libsonnet',
-  local namespace = $.core.v1.namespace,
-  local cm = $.core.v1.configMap,
+  local namespace = k.core.v1.namespace,
+  local cm = k.core.v1.configMap,
   local c = $._config.wordpress,
-  local cron = $.batch.v1.cronJob,
-  local deploy = $.apps.v1.deployment,
-  local svc = $.core.v1.service,
-  local container = $.core.v1.container,
-  local secret_ref = $.core.v1.envFromSource.secretRef,
-  local volume_mount = $.core.v1.volumeMount,
-  local volume = $.core.v1.volume,
+  local cron = k.batch.v1.cronJob,
+  local deploy = k.apps.v1.deployment,
+  local svc = k.core.v1.service,
+  local container = k.core.v1.container,
+  local secret_ref = k.core.v1.envFromSource.secretRef,
+  local volume_mount = k.core.v1.volumeMount,
+  local volume = k.core.v1.volume,
   local volume_www = volume.fromPersistentVolumeClaim('var-www', 'wordpress'),
   local volume_gsa = volume.fromSecret('gcp-sa', 'backup-gcp-sa'),
 

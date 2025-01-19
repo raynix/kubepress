@@ -14,6 +14,16 @@
     {
       "source": {
         "git": {
+          "remote": "https://github.com/grafana/jsonnet-libs.git",
+          "subdir": "tanka-util"
+        }
+      },
+      "version": "81276dc16831be896821b44b03a6405b4af8a8b4",
+      "sum": "ShSIissXdvCy1izTCDZX6tY7qxCoepE5L+WJ52Hw7ZQ="
+    },
+    {
+      "source": {
+        "git": {
           "remote": "https://github.com/jsonnet-libs/docsonnet.git",
           "subdir": "doc-util"
         }
@@ -25,11 +35,11 @@
       "source": {
         "git": {
           "remote": "https://github.com/jsonnet-libs/istio-libsonnet.git",
-          "subdir": "1.19"
+          "subdir": "1.23"
         }
       },
-      "version": "7d51301969eb8b3bfb1569ba611ff32ba519a559",
-      "sum": "1YSM3SuiuPRD8sWmABEUsdoFRyNPJKcgLkVB7oqAG/E="
+      "version": "2c952fca69bc3b3183d248e4202cab415ff1d66b",
+      "sum": "kIPBHeF1elOhxaBP9Y3Vr1y/bxby4blc10t/NCScCuk="
     },
     {
       "source": {
